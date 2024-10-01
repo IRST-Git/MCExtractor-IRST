@@ -7,7 +7,8 @@ Intel, AMD, VIA & Freescale Microcode Extractor
 Copyright (C) 2016-2024 Plato Mavropoulos
 """
 
-title = 'MC Extractor v1.101.0'
+ModifiedTag =  ' - Modified for IRST'
+title = 'MC Extractor'
 
 import sys
 
@@ -836,10 +837,10 @@ def mce_upd_check(db_path) :
         db_print = '(r%s --> r%s)' % (cur_db_ver, git_db_ver)
         db_is_upd = cur_db_ver >= git_db_ver
         
-        git_link = '\n         Download the latest from https://github.com/platomav/MCExtractor/'
-        if not py_is_upd and not db_is_upd : result = col_m + '\nWarning: Outdated MC Extractor %s & Database %s!' % (py_print,db_print) + git_link + col_e
-        elif not py_is_upd : result = col_m + '\nWarning: Outdated MC Extractor %s!' % py_print + git_link + col_e
-        elif not db_is_upd : result = col_m + '\nWarning: Outdated Database %s!' % db_print + git_link + col_e
+        #git_link = '\n         Download the latest from https://github.com/platomav/MCExtractor/'
+        #if not py_is_upd and not db_is_upd : result = col_m + '\nWarning: Outdated MC Extractor %s & Database %s!' % (py_print,db_print) + git_link + col_e
+        #elif not py_is_upd : result = col_m + '\nWarning: Outdated MC Extractor %s!' % py_print + git_link + col_e
+        #elif not db_is_upd : result = col_m + '\nWarning: Outdated Database %s!' % db_print + git_link + col_e
     except :
         result = None
     
@@ -999,7 +1000,7 @@ def display_sql(cursor,title,header,padd):
     
 def mce_hdr(hdr_title) :
     hdr_pt, _ = mc_table([], False, 1)
-    hdr_pt.add_row([col_y + '        %s        ' % hdr_title + col_e])
+    hdr_pt.add_row([col_y + '        %s' % hdr_title + '%s        ' % ModifiedTag + col_e])
     
     print(hdr_pt)
     
@@ -1069,14 +1070,6 @@ if os.path.isfile(db_path) :
     
     connection.commit()
     
-    # Check for MCE & DB incompatibility
-    db_rev = (cursor.execute('SELECT revision FROM MCE')).fetchone()[0]
-    db_dev = ['',' Dev'][(cursor.execute('SELECT developer FROM MCE')).fetchone()[0]]
-    db_min = (cursor.execute('SELECT minimum FROM MCE')).fetchone()[0]
-    if not mce_is_latest(title[14:].split('_')[0].split('.')[:3], db_min.split('_')[0].split('.')[:3]) :
-        mce_hdr(title)
-        print(col_r + '\nError: DB r%d%s requires MCE >= v%s!' % (db_rev, db_dev, db_min) + col_e)
-        mce_exit(-1)
     
 else :
     cursor = None
